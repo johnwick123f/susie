@@ -144,7 +144,7 @@ def load_pretrained_unet(
     path: str, in_channels: int
 ) -> Tuple[FlaxUNet2DConditionModel, dict]:
     model_def, params = FlaxUNet2DConditionModel.from_pretrained(
-        path, dtype=np.float32, subfolder="unet"
+        path, dtype=jnp.bfloat16, subfolder="unet"
     )
 
     # same issue, they commit the params to the CPU, which totally messes stuff
