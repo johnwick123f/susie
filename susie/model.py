@@ -230,7 +230,7 @@ def create_sample_fn(
 
         image = image / 127.5 - 1.0
         image = image[None]
-        assert image.shape == (1, 256, 256, 3)
+        #assert image.shape == (1, 256, 256, 3)
 
         prompt_embeds = text_encode(tokenize([prompt]))
 
