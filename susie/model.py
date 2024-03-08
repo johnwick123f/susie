@@ -2,7 +2,7 @@ import os
 import time
 from functools import partial
 from typing import Any, Callable, List, Optional, Tuple
-
+import time
 import einops as eo
 import jax
 import jax.numpy as jnp
@@ -231,13 +231,15 @@ def create_sample_fn(
         image = image / 127.5 - 1.0
         image = image[None]
         #assert image.shape == (1, 256, 256, 3)
-
+        time1 = time.time()
         prompt_embeds = text_encode(tokenize([prompt]))
-
+        print(f"It took {time.time() - time1} for encoding the text")
         # encode stuff
+        time1 = time.time()
         rng, encode_rng = jax.random.split(rng)
         contexts = vae_encode(encode_rng, image, scale=False)
-
+        print(f"It took {time.time() - time1} for encoding the image with vae")
+        time1 = time.time()
         rng, sample_rng = jax.random.split(rng)
         samples = sample_loop(
             sample_rng,
@@ -251,9 +253,11 @@ def create_sample_fn(
             uncond_y=jnp.zeros_like(contexts),
             uncond_prompt_embeds=uncond_prompt_embed,
         )
+        print(f"It took {time.time() - time1} for doing sample_loop")
+        time1 = time.time()
         samples = vae_decode(samples)
         samples = jnp.clip(jnp.round(samples * 127.5 + 127.5), 0, 255).astype(jnp.uint8)
-
+        print(f"It took {time.time() - time1} for decoding the image with vae")
         return jax.device_get(samples[0])
 
     return sample
