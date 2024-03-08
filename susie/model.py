@@ -258,6 +258,7 @@ def create_sample_fn(
         samples = vae_decode(samples)
         samples = jnp.clip(jnp.round(samples * 127.5 + 127.5), 0, 255).astype(jnp.uint8)
         print(f"It took {time.time() - time1} for decoding the image with vae")
-        return jax.device_get(samples[0])
+        return samples[0]
+        #return jax.device_get(samples[0])
 
     return sample
